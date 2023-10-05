@@ -1,3 +1,4 @@
+use crate::crypto::encrypt;
 use crate::structure::{Chat, Info};
 use actix_web::{
     delete, get, post, put, web, App, HttpResponse, HttpServer, Responder, ResponseError,
@@ -7,7 +8,6 @@ use mongodb::bson::{doc, oid::ObjectId, to_document};
 use mongodb::options::{ClientOptions, FindOptions, ReturnDocument};
 use mongodb::{Client, Collection};
 use serde::{Deserialize, Serialize};
-
 #[post("/login/register")]
 pub async fn regist(data: web::Json<Info>) -> impl Responder {
     let client_options = ClientOptions::parse("mongodb://localhost:27017")
@@ -47,6 +47,31 @@ pub async fn posting(data: web::Json<Chat>) -> impl Responder {
 
 #[post("/login/cert")]
 pub async fn auth(data: web::Json<Info>) -> impl Responder {
+    let client_options = ClientOptions::parse("mongodb://localhost:27017")
+        .await
+        .expect("DataBaseError");
+    let client = Client::with_options(client_options).expect("Error : (Hint server/src/main.rs:27");
+    let datas = data.0.clone();
+    let filter = doc! {"user":datas.clone().user};
+    let db = client.database("server");
+    let col = db.collection::<Info>("info");
+    let find_options = FindOptions::builder().build();
+    let mut cursor = col
+        .find(filter, find_options)
+        .await
+        .expect("DataBaseError:58");
+    while let Some(book) = cursor.try_next().await.expect("DataBaseError:60") {
+        if book.pass == datas.pass {
+            return format!("Ok");
+        } else {
+            return format!("Err");
+        }
+    }
+    return format!("Err");
+}
+
+#[post("/login/cert/safe")]
+pub async fn safe_auth(data: web::Json<Info>) -> impl Responder {
     let client_options = ClientOptions::parse("mongodb://localhost:27017")
         .await
         .expect("DataBaseError");

@@ -1,4 +1,5 @@
 #![allow(unused_imports)]
+pub mod crypto;
 pub mod func;
 pub mod structure;
 use actix_web::{

@@ -14,3 +14,8 @@ anyhow = "1.0.71"
 tokio = "1.29.1"
 rayon = "1.7.0"
 futures-util = "0.3.28"
+aes = "0.7.5"
+block-modes = "0.8.1"
+base64 = "0.13.0"
+sha2 = "0.9.8"
+getrandom = { version = "0.2", features = ["js"] }

@@ -1,0 +1,1 @@
+curl -X POST -H 'Content-Type: application/json' -d '{ "user":"sou31415","pass":"abc"}' http://192.168.1.8:8080/login/register
